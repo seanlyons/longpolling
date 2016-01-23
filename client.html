@@ -1,0 +1,53 @@
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js.cookie.js"></script>
+<script>
+    $( document ).ready(function() {
+        get_location();
+        if (!Cookies.get('player_id')) {
+            Cookies.set('player_id', Math.random() * 100000000000000000);
+        }
+        $('#player_id').val(Cookies.get('player_id'));
+        
+        $('#id').val( Math.floor((Math.random() * 10) + 1) );
+        $('#last_updated').val( Math.floor((Math.random() * 10) + 1) );
+
+        $('#play').click(function() {
+            click_play();
+        });        
+    });
+
+    var x = 37.729223;
+    var y = -122.444564;
+
+    function obtain_x_y(position) {
+        x = position.coords.latitude;
+        y = position.coords.longitude;
+
+        console.log(x, y);
+        
+        $("input[name='x']").val(x);
+        $("input[name='y']").val(y);
+    }
+
+    function get_location() {
+        navigator.geolocation.getCurrentPosition(obtain_x_y);
+    }
+    
+    function click_play() {
+        url = 'endpoint.php?' + $('#play_form').serialize();
+        $.get(url, function(response) {
+            console.log(response);
+        });
+    }
+</script>
+
+
+
+<form id="play_form">
+    <input type='hidden' name='player_id' id='player_id' />
+    <input type='hidden' name='x' placeholder='x'/>
+    <input type='hidden' name='y' placeholder='y'/>
+    <input id='id' type='number' name='id' placeholder='game id' />
+    <input id='last_updated' type='number' name='last_updated' placeholder='last update (epoch)' />
+    <button type='button' id='play'>Play</button>
+</form>
